@@ -232,4 +232,10 @@ if fc-list 2>/dev/null | grep -qi "CaskaydiaMono"; then print_success "Caskaydia
 
 echo
 print_success "Setup complete! ¡Pura vida! 🌴"
+if is_desktop; then
+    print_status "In GNOME Terminal, open Preferences > your profile > Text, enable Custom font, and select 'CaskaydiaMono Nerd Font Mono'."
+    pause_for_user "Press Enter after selecting the font, or to skip this step for now..."
+else
+    print_status "For SSH sessions, install and select 'CaskaydiaMono Nerd Font Mono' on the machine running your terminal."
+fi
 print_status "Log out and back in so zsh becomes your shell and the docker group applies."

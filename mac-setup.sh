@@ -67,6 +67,7 @@ brew_install macvim
 brew_install vim
 brew_install gh
 brew_install iterm2 --cask
+brew_install font-caskaydia-mono-nerd-font --cask
 brew_install copilot-cli --cask
 brew_install codex --cask
 brew_install claude --cask
@@ -122,6 +123,12 @@ for app in Claude Obsidian; do
     fi
 done
 
+if brew list --cask font-caskaydia-mono-nerd-font &> /dev/null; then
+    print_success "CaskaydiaMono Nerd Font installed successfully"
+else
+    print_error "CaskaydiaMono Nerd Font installation failed"
+fi
+
 if mas list 2>/dev/null | grep -q "Divvy"; then
     print_success "Divvy installed successfully"
 else
@@ -132,4 +139,6 @@ if [[ -d "$HOME/.oh-my-zsh" ]]; then print_success "Oh My Zsh installed"; else p
 
 echo
 print_success "Setup complete! ¡Pura vida! 🌴"
+print_status "In iTerm2, open Settings > Profiles > Text > Font and select 'CaskaydiaMono Nerd Font Mono'."
+pause_for_user "Press Enter after selecting the font, or to skip this step for now..."
 print_status "Please restart your terminal to ensure zsh is active and mise is properly loaded."
