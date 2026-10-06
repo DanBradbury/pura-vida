@@ -33,16 +33,19 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 | Terminal | iTerm2 | (default GNOME Terminal) |
 | Editor | vim + MacVim | vim + gVim (desktop only) |
 | Git | GitHub CLI (`gh`) | GitHub CLI (`gh`), lazygit |
-| AI coding | GitHub Copilot CLI, OpenAI Codex CLI | GitHub Copilot CLI, OpenAI Codex CLI |
-| Desktop apps | Claude Desktop, Obsidian | Claude Desktop (amd64/arm64), Obsidian (desktop only) |
+| AI coding | GitHub Copilot CLI, OpenAI Codex CLI, Claude Code CLI | GitHub Copilot CLI, OpenAI Codex CLI, Claude Code CLI |
+| Desktop apps | Claude Desktop, Grok Bot, Obsidian | Claude Desktop, Grok Bot (amd64/arm64), Obsidian (desktop only) |
+| Clipboard | | Pano (supported GNOME desktops only) |
 | Containers | | Docker Engine + Compose |
 | System monitor | | btop++ (`btop`) |
 | Fonts | Nerd Font (Cascadia Mono) | Nerd Font (Cascadia Mono) |
 | Languages | mise: Python/Ruby/Go/Java/Node.js/Rust | mise: Python/Ruby/Go/Java/Node.js/Rust |
 | Window mgmt | Divvy (App Store) | |
 
-macOS installs the AI tools and desktop apps through Homebrew casks. Ubuntu installs the CLIs through npm using mise-managed Node.js, Claude Desktop through Anthropic's apt repository, and Obsidian through Snap. Desktop apps are skipped on Ubuntu machines without a desktop environment.
+macOS installs the AI tools and desktop apps through Homebrew casks. Ubuntu installs the CLIs through npm using mise-managed Node.js, Claude Desktop through Anthropic's apt repository, Grok Bot through the official release feed's `.deb` package, and Obsidian through Snap. Desktop apps are skipped on Ubuntu machines without a desktop environment. See [Grok Bot's installation guide](https://docs.x.ai/grok-bot/get-started#linux) and [release feed documentation](https://prod.cursor.com/docs/grok-bot/deployment).
+
+Ubuntu GNOME desktops also install Pano's dependencies and a compatible [upstream release](https://github.com/oae/gnome-shell-pano/releases): `v19` for GNOME 42–44 (Ubuntu 22.04), or `v23-alpha5` for GNOME 45–48 (including Ubuntu 24.04). Other GNOME versions are skipped. If Pano cannot be enabled immediately, log out and back in, then run `gnome-extensions enable pano@elhan.io`. Toggle the clipboard with Super+Shift+V.
 
 Both platforms install CaskaydiaMono Nerd Font (the patched Cascadia Mono font). After setup, the installer prompts you to select `CaskaydiaMono Nerd Font Mono` in iTerm2 on macOS or GNOME Terminal on Ubuntu desktops. Press Enter when done or to skip the step. For SSH sessions, install and select the font on the machine running your terminal.
 
-After setup, run `copilot` and use `/login`, run `codex` to sign in, and open Claude Desktop to sign in. GitHub CLI authentication does not sign you into these tools.
+After setup, run `copilot` and use `/login`, run `codex` and `claude` to sign in, and open Claude Desktop and Grok Bot to sign in. Grok Bot uses your Cursor account and requires an eligible plan. GitHub CLI authentication does not sign you into these tools.

@@ -49,7 +49,7 @@ keep_sudo_alive
 # --- Base packages -----------------------------------------------------------
 print_status "Installing base packages and language build dependencies..."
 apt_install \
-    build-essential ca-certificates curl git gnupg unzip zip fontconfig \
+    build-essential ca-certificates curl git gnupg unzip zip fontconfig python3 \
     zsh vim btop software-properties-common pkg-config autoconf bison \
     libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgdbm-dev \
     libncurses-dev libsqlite3-dev libbz2-dev liblzma-dev tk-dev uuid-dev libxml2-dev
@@ -147,10 +147,11 @@ install_mise_languages
 
 # --- AI coding CLIs ----------------------------------------------------------
 # mise exec makes the newly installed Node/npm available before shell activation.
-for tool in copilot codex; do
+for tool in copilot codex claude; do
     case "$tool" in
         copilot) package=@github/copilot ;;
         codex) package=@openai/codex ;;
+        claude) package=@anthropic-ai/claude-code ;;
     esac
     if mise exec -- which "$tool" &> /dev/null; then
         print_success "$tool already installed"
@@ -160,8 +161,69 @@ for tool in copilot codex; do
     fi
 done
 
+# Install the upstream archive matching the installed GNOME Shell version.
+install_pano() {
+    if ! command -v gnome-shell &> /dev/null; then
+        print_status "No GNOME Shell detected: skipping Pano."
+        return 0
+    fi
+    local shell_version release extension_dir
+    shell_version="$(gnome-shell --version | awk '{print $NF}' | cut -d. -f1)"
+    case "$shell_version" in
+        42|43|44) release=v19 ;;
+        45|46|47|48) release=v23-alpha5 ;;
+        *)
+            print_warning "No compatible Pano release for GNOME $shell_version; skipping."
+            return 0 ;;
+    esac
+    extension_dir="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/pano@elhan.io"
+    apt_install gir1.2-gda-5.0 gir1.2-gsound-1.0
+    if [[ -f "$extension_dir/metadata.json" ]]; then
+        print_success "Pano already installed"
+    else
+        print_status "Installing Pano $release for GNOME $shell_version..."
+        run bash -c "set -e
+            tmp=\$(mktemp -d)
+            trap 'rm -rf \"\$tmp\"' EXIT
+            curl -fsSL -o \"\$tmp/pano.zip\" 'https://github.com/oae/gnome-shell-pano/releases/download/$release/pano%40elhan.io.zip'
+            mkdir -p \"\$1\"
+            unzip -oq \"\$tmp/pano.zip\" -d \"\$1\"
+        " bash "$extension_dir"
+    fi
+    if is_dry_run; then
+        print_dry "gnome-extensions enable pano@elhan.io"
+    elif ! gnome-extensions enable pano@elhan.io; then
+        print_warning "Log out and back in, then run: gnome-extensions enable pano@elhan.io"
+    fi
+}
+
 # --- Desktop apps ------------------------------------------------------------
 if is_desktop; then
+    case "$ARCH" in
+        amd64) GROK_ARCH=x64 ;;
+        arm64) GROK_ARCH=arm64 ;;
+        *) GROK_ARCH="" ;;
+    esac
+    if [[ -z "$GROK_ARCH" ]]; then
+        print_warning "No Grok Bot build for $ARCH; skipping."
+    elif dpkg -s grok-bot 2>/dev/null | grep -q '^Status: install ok installed$'; then
+        print_success "Grok Bot already installed"
+    else
+        print_status "Installing Grok Bot..."
+        # The official release feed provides the current architecture-specific .deb URL.
+        run bash -c '
+            set -euo pipefail
+            tmp=$(mktemp -d)
+            trap '\''rm -rf "$tmp"'\'' EXIT
+            curl -fsSL "https://api2.cursor.sh/updates/api/download/stable/linux-$1/sand" -o "$tmp/release.json"
+            url=$(python3 -c '\''import json, sys; print(json.load(open(sys.argv[1]))["debUrl"])'\'' "$tmp/release.json")
+            curl -fsSL "$url" -o "$tmp/grok-bot.deb"
+            chmod 755 "$tmp"
+            chmod 644 "$tmp/grok-bot.deb"
+            sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "$tmp/grok-bot.deb"
+        ' bash "$GROK_ARCH"
+    fi
+
     case "$ARCH" in
         amd64|arm64)
             if dpkg -s claude-desktop 2>/dev/null | grep -q '^Status: install ok installed$'; then
@@ -184,8 +246,9 @@ if is_desktop; then
         command -v snap &> /dev/null || apt_install snapd
         run sudo snap install obsidian --classic
     fi
+    install_pano
 else
-    print_status "No desktop detected: skipping Claude Desktop and Obsidian."
+    print_status "No desktop detected: skipping Claude Desktop, Grok Bot, Obsidian, and Pano."
 fi
 
 # --- GitHub auth -------------------------------------------------------------
@@ -206,7 +269,7 @@ for program in zsh vim btop gh docker lazygit mise; do
         print_error "$program installation failed"
     fi
 done
-for program in copilot codex; do
+for program in copilot codex claude; do
     if mise exec -- which "$program" &> /dev/null; then
         print_success "$program installed"
     else
@@ -214,6 +277,13 @@ for program in copilot codex; do
     fi
 done
 if is_desktop; then
+    if [[ -n "$GROK_ARCH" ]]; then
+        if dpkg -s grok-bot 2>/dev/null | grep -q '^Status: install ok installed$'; then
+            print_success "Grok Bot installed"
+        else
+            print_error "Grok Bot installation failed"
+        fi
+    fi
     if [[ "$ARCH" == amd64 ]] || [[ "$ARCH" == arm64 ]]; then
         if dpkg -s claude-desktop 2>/dev/null | grep -q '^Status: install ok installed$'; then
             print_success "Claude Desktop installed"

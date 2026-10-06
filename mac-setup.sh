@@ -70,7 +70,9 @@ brew_install iterm2 --cask
 brew_install font-caskaydia-mono-nerd-font --cask
 brew_install copilot-cli --cask
 brew_install codex --cask
+brew_install claude-code --cask
 brew_install claude --cask
+brew_install grok-bot --cask
 brew_install obsidian --cask
 brew_install mas
 
@@ -101,7 +103,7 @@ fi
 print_status "Verifying installations..."
 verify_mise_languages
 
-for program in mvim vim gh copilot codex; do
+for program in mvim vim gh copilot codex claude; do
     if command -v "$program" &> /dev/null; then
         print_success "$program installed successfully"
     else
@@ -115,7 +117,7 @@ else
     print_error "iTerm2 installation failed"
 fi
 
-for app in Claude Obsidian; do
+for app in Claude "Grok Bot" Obsidian; do
     if [[ -d "/Applications/$app.app" ]] || [[ -d "$HOME/Applications/$app.app" ]]; then
         print_success "$app installed successfully"
     else
