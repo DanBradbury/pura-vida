@@ -33,7 +33,13 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 | Terminal | iTerm2 | (default GNOME Terminal) |
 | Editor | vim + MacVim | vim + gVim (desktop only) |
 | Git | GitHub CLI (`gh`) | GitHub CLI (`gh`), lazygit |
+| AI coding | GitHub Copilot CLI, OpenAI Codex CLI | GitHub Copilot CLI, OpenAI Codex CLI |
+| Desktop apps | Claude Desktop, Obsidian | Claude Desktop (amd64/arm64), Obsidian (desktop only) |
 | Containers | | Docker Engine + Compose |
 | Fonts | | Nerd Font (Cascadia Mono) |
 | Languages | mise: Python/Ruby/Go/Java/Node.js/Rust | mise: Python/Ruby/Go/Java/Node.js/Rust |
 | Window mgmt | Divvy (App Store) | |
+
+macOS installs the AI tools and desktop apps through Homebrew casks. Ubuntu installs the CLIs through npm using mise-managed Node.js, Claude Desktop through Anthropic's apt repository, and Obsidian through Snap. Desktop apps are skipped on Ubuntu machines without a desktop environment.
+
+After setup, run `copilot` and use `/login`, run `codex` to sign in, and open Claude Desktop to sign in. GitHub CLI authentication does not sign you into these tools.

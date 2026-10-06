@@ -145,6 +145,49 @@ append_line_once 'eval "$(~/.local/bin/mise activate bash)"' "$HOME/.bashrc"
 
 install_mise_languages
 
+# --- AI coding CLIs ----------------------------------------------------------
+# mise exec makes the newly installed Node/npm available before shell activation.
+for tool in copilot codex; do
+    case "$tool" in
+        copilot) package=@github/copilot ;;
+        codex) package=@openai/codex ;;
+    esac
+    if mise exec -- which "$tool" &> /dev/null; then
+        print_success "$tool already installed"
+    else
+        print_status "Installing $tool..."
+        run mise exec -- npm install -g "$package"
+    fi
+done
+
+# --- Desktop apps ------------------------------------------------------------
+if is_desktop; then
+    case "$ARCH" in
+        amd64|arm64)
+            if dpkg -s claude-desktop 2>/dev/null | grep -q '^Status: install ok installed$'; then
+                print_success "Claude Desktop already installed"
+            else
+                print_status "Installing Claude Desktop..."
+                run sudo curl -fsSL https://downloads.claude.ai/claude-desktop/key.asc -o "$KEYRINGS/claude-desktop.asc"
+                run sudo chmod a+r "$KEYRINGS/claude-desktop.asc"
+                run_shell "echo 'deb [arch=$ARCH signed-by=$KEYRINGS/claude-desktop.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main' | sudo tee /etc/apt/sources.list.d/claude-desktop.list > /dev/null"
+                apt_update
+                apt_install claude-desktop
+            fi ;;
+        *) print_warning "No Claude Desktop build for $ARCH; skipping." ;;
+    esac
+
+    if snap list obsidian &> /dev/null; then
+        print_success "Obsidian already installed"
+    else
+        print_status "Installing Obsidian..."
+        command -v snap &> /dev/null || apt_install snapd
+        run sudo snap install obsidian --classic
+    fi
+else
+    print_status "No desktop detected: skipping Claude Desktop and Obsidian."
+fi
+
 # --- GitHub auth -------------------------------------------------------------
 github_auth
 
@@ -163,6 +206,27 @@ for program in zsh vim gh docker lazygit mise; do
         print_error "$program installation failed"
     fi
 done
+for program in copilot codex; do
+    if mise exec -- which "$program" &> /dev/null; then
+        print_success "$program installed"
+    else
+        print_error "$program installation failed"
+    fi
+done
+if is_desktop; then
+    if [[ "$ARCH" == amd64 ]] || [[ "$ARCH" == arm64 ]]; then
+        if dpkg -s claude-desktop 2>/dev/null | grep -q '^Status: install ok installed$'; then
+            print_success "Claude Desktop installed"
+        else
+            print_error "Claude Desktop installation failed"
+        fi
+    fi
+    if snap list obsidian &> /dev/null; then
+        print_success "Obsidian installed"
+    else
+        print_error "Obsidian installation failed"
+    fi
+fi
 if [[ -d "$HOME/.oh-my-zsh" ]]; then print_success "Oh My Zsh installed"; else print_error "Oh My Zsh installation failed"; fi
 if fc-list 2>/dev/null | grep -qi "CaskaydiaMono"; then print_success "CaskaydiaMono Nerd Font installed"; else print_warning "Nerd Font not detected"; fi
 

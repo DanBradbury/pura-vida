@@ -67,6 +67,10 @@ brew_install macvim
 brew_install vim
 brew_install gh
 brew_install iterm2 --cask
+brew_install copilot-cli --cask
+brew_install codex --cask
+brew_install claude --cask
+brew_install obsidian --cask
 brew_install mas
 
 # Add mise to zsh profile
@@ -96,7 +100,7 @@ fi
 print_status "Verifying installations..."
 verify_mise_languages
 
-for program in mvim vim gh; do
+for program in mvim vim gh copilot codex; do
     if command -v "$program" &> /dev/null; then
         print_success "$program installed successfully"
     else
@@ -109,6 +113,14 @@ if [[ -d "/Applications/iTerm.app" ]]; then
 else
     print_error "iTerm2 installation failed"
 fi
+
+for app in Claude Obsidian; do
+    if [[ -d "/Applications/$app.app" ]] || [[ -d "$HOME/Applications/$app.app" ]]; then
+        print_success "$app installed successfully"
+    else
+        print_error "$app installation failed"
+    fi
+done
 
 if mas list 2>/dev/null | grep -q "Divvy"; then
     print_success "Divvy installed successfully"
