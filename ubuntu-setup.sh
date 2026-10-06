@@ -50,7 +50,7 @@ keep_sudo_alive
 print_status "Installing base packages and language build dependencies..."
 apt_install \
     build-essential ca-certificates curl git gnupg unzip zip fontconfig \
-    zsh vim software-properties-common pkg-config autoconf bison \
+    zsh vim btop software-properties-common pkg-config autoconf bison \
     libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgdbm-dev \
     libncurses-dev libsqlite3-dev libbz2-dev liblzma-dev tk-dev uuid-dev libxml2-dev
 
@@ -199,7 +199,7 @@ fi
 
 print_status "Verifying installations..."
 verify_mise_languages
-for program in zsh vim gh docker lazygit mise; do
+for program in zsh vim btop gh docker lazygit mise; do
     if command -v "$program" &> /dev/null; then
         print_success "$program installed"
     else

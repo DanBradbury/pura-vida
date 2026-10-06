@@ -36,6 +36,7 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 | AI coding | GitHub Copilot CLI, OpenAI Codex CLI | GitHub Copilot CLI, OpenAI Codex CLI |
 | Desktop apps | Claude Desktop, Obsidian | Claude Desktop (amd64/arm64), Obsidian (desktop only) |
 | Containers | | Docker Engine + Compose |
+| System monitor | | btop++ (`btop`) |
 | Fonts | | Nerd Font (Cascadia Mono) |
 | Languages | mise: Python/Ruby/Go/Java/Node.js/Rust | mise: Python/Ruby/Go/Java/Node.js/Rust |
 | Window mgmt | Divvy (App Store) | |
