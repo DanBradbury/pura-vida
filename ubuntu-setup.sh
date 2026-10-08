@@ -51,7 +51,7 @@ print_status "Installing base packages and language build dependencies..."
 apt_install \
     build-essential ca-certificates curl git gnupg unzip zip fontconfig python3 \
     zsh vim btop software-properties-common pkg-config autoconf bison \
-    libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgdbm-dev \
+    libplist-utils libssl-dev libreadline-dev zlib1g-dev libyaml-dev libffi-dev libgdbm-dev \
     libncurses-dev libsqlite3-dev libbz2-dev liblzma-dev tk-dev uuid-dev libxml2-dev
 
 if is_desktop; then
