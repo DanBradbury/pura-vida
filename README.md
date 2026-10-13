@@ -35,7 +35,7 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 | Git | GitHub CLI (`gh`) | GitHub CLI (`gh`), lazygit |
 | AI coding | GitHub Copilot CLI, OpenAI Codex CLI, Claude Code CLI | GitHub Copilot CLI, OpenAI Codex CLI, Claude Code CLI |
 | Desktop apps | Claude Desktop, Grok Bot, Obsidian | Claude Desktop, Grok Bot (amd64/arm64), Obsidian (desktop only) |
-| Clipboard | | Pano (supported GNOME desktops only) |
+| Clipboard | | Copyous (GNOME 48–51) |
 | Containers | | Docker Engine + Compose |
 | System monitor | | btop++ (`btop`) |
 | Fonts | Nerd Font (Cascadia Mono) | Nerd Font (Cascadia Mono) |
@@ -44,7 +44,7 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 
 macOS installs the AI tools and desktop apps through Homebrew casks. Ubuntu installs the CLIs through npm using mise-managed Node.js, Claude Desktop through Anthropic's apt repository, Grok Bot through the official release feed's `.deb` package, and Obsidian through Snap. Desktop apps are skipped on Ubuntu machines without a desktop environment. See [Grok Bot's installation guide](https://docs.x.ai/grok-bot/get-started#linux) and [release feed documentation](https://prod.cursor.com/docs/grok-bot/deployment).
 
-Ubuntu GNOME desktops also install Pano's dependencies and a compatible [upstream release](https://github.com/oae/gnome-shell-pano/releases): `v19` for GNOME 42–44 (Ubuntu 22.04), or `v23-alpha5` for GNOME 45–48 (including Ubuntu 24.04). Other GNOME versions are skipped. If Pano cannot be enabled immediately, log out and back in, then run `gnome-extensions enable pano@elhan.io`. Toggle the clipboard with Super+Shift+V.
+Ubuntu GNOME desktops also install Copyous's dependencies and the [upstream release](https://github.com/boerdereinar/copyous/releases) for GNOME 48–51. Other GNOME versions are skipped. If Copyous cannot be enabled immediately, log out and back in, then run `gnome-extensions enable copyous@boerdereinar.dev`. Toggle the clipboard with Super+Shift+V.
 
 Both platforms install CaskaydiaMono Nerd Font (the patched Cascadia Mono font). After setup, the installer prompts you to select `CaskaydiaMono Nerd Font Mono` in iTerm2 on macOS or GNOME Terminal on Ubuntu desktops. Press Enter when done or to skip the step. For SSH sessions, install and select the font on the machine running your terminal.
 
