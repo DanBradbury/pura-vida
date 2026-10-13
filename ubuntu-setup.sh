@@ -162,38 +162,37 @@ for tool in copilot codex claude; do
 done
 
 # Install the upstream archive matching the installed GNOME Shell version.
-install_pano() {
+install_copyous() {
     if ! command -v gnome-shell &> /dev/null; then
-        print_status "No GNOME Shell detected: skipping Pano."
+        print_status "No GNOME Shell detected: skipping Copyous."
         return 0
     fi
-    local shell_version release extension_dir
+    local shell_version extension_dir
     shell_version="$(gnome-shell --version | awk '{print $NF}' | cut -d. -f1)"
     case "$shell_version" in
-        42|43|44) release=v19 ;;
-        45|46|47|48) release=v23-alpha5 ;;
+        48|49|50|51) ;;
         *)
-            print_warning "No compatible Pano release for GNOME $shell_version; skipping."
+            print_warning "No compatible Copyous release for GNOME $shell_version; skipping."
             return 0 ;;
     esac
-    extension_dir="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/pano@elhan.io"
+    extension_dir="${XDG_DATA_HOME:-$HOME/.local/share}/gnome-shell/extensions/copyous@boerdereinar.dev"
     apt_install gir1.2-gda-5.0 gir1.2-gsound-1.0
     if [[ -f "$extension_dir/metadata.json" ]]; then
-        print_success "Pano already installed"
+        print_success "Copyous already installed"
     else
-        print_status "Installing Pano $release for GNOME $shell_version..."
+        print_status "Installing Copyous for GNOME $shell_version..."
         run bash -c "set -e
             tmp=\$(mktemp -d)
             trap 'rm -rf \"\$tmp\"' EXIT
-            curl -fsSL -o \"\$tmp/pano.zip\" 'https://github.com/oae/gnome-shell-pano/releases/download/$release/pano%40elhan.io.zip'
+            curl -fsSL -o \"\$tmp/copyous.zip\" 'https://github.com/boerdereinar/copyous/releases/download/v2.1.0/copyous%40boerdereinar.dev.zip'
             mkdir -p \"\$1\"
-            unzip -oq \"\$tmp/pano.zip\" -d \"\$1\"
+            unzip -oq \"\$tmp/copyous.zip\" -d \"\$1\"
         " bash "$extension_dir"
     fi
     if is_dry_run; then
-        print_dry "gnome-extensions enable pano@elhan.io"
-    elif ! gnome-extensions enable pano@elhan.io; then
-        print_warning "Log out and back in, then run: gnome-extensions enable pano@elhan.io"
+        print_dry "gnome-extensions enable copyous@boerdereinar.dev"
+    elif ! gnome-extensions enable copyous@boerdereinar.dev; then
+        print_warning "Log out and back in, then run: gnome-extensions enable copyous@boerdereinar.dev"
     fi
 }
 
@@ -246,9 +245,9 @@ if is_desktop; then
         command -v snap &> /dev/null || apt_install snapd
         run sudo snap install obsidian --classic
     fi
-    install_pano
+    install_copyous
 else
-    print_status "No desktop detected: skipping Claude Desktop, Grok Bot, Obsidian, and Pano."
+    print_status "No desktop detected: skipping Claude Desktop, Grok Bot, Obsidian, and Copyous."
 fi
 
 # --- GitHub auth -------------------------------------------------------------
