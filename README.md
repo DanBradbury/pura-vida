@@ -44,6 +44,8 @@ The aim of the `pura-vida` setup is to remove the headache and initial tool inde
 
 macOS installs the AI tools and desktop apps through Homebrew casks. Ubuntu installs the CLIs through npm using mise-managed Node.js, Claude Desktop through Anthropic's apt repository, Grok Bot through the official release feed's `.deb` package, and Obsidian through Snap. Desktop apps are skipped on Ubuntu machines without a desktop environment. See [Grok Bot's installation guide](https://docs.x.ai/grok-bot/get-started#linux) and [release feed documentation](https://prod.cursor.com/docs/grok-bot/deployment).
 
+mise languages are pinned globally to an exact version on first install. Re-running the installer keeps the existing global versions (an older floating `latest` entry is pinned to the newest installed version), so tools installed into them, such as npm globals or `go install` binaries, keep working. Run `mise use -g --pin <lang>@latest` to upgrade a language deliberately.
+
 Ubuntu GNOME desktops also install Copyous's dependencies and the [upstream release](https://github.com/boerdereinar/copyous/releases) for GNOME 48–51. Other GNOME versions are skipped. If Copyous cannot be enabled immediately, log out and back in, then run `gnome-extensions enable copyous@boerdereinar.dev`. Toggle the clipboard with Super+Shift+V.
 
 Both platforms install CaskaydiaMono Nerd Font (the patched Cascadia Mono font). After setup, the installer prompts you to select `CaskaydiaMono Nerd Font Mono` in iTerm2 on macOS or GNOME Terminal on Ubuntu desktops. Press Enter when done or to skip the step. For SSH sessions, install and select the font on the machine running your terminal.
