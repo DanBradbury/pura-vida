@@ -113,10 +113,30 @@ keep_sudo_alive() {
 
 MISE_LANGUAGES=("python" "ruby" "go" "java" "node" "rust")
 
+# Idempotent: keep any globally configured version so binaries installed into it
+# (npm -g, go install, cargo install, ...) stay reachable through the mise shims.
+# New installs are pinned to an exact version; a floating "latest" is pinned to
+# the newest version already installed instead of jumping to a new release.
 install_mise_languages() {
+    local lang requested installed
     for lang in "${MISE_LANGUAGES[@]}"; do
-        print_status "Installing ${lang} with mise..."
-        run mise use --global --yes "${lang}@latest"
+        requested="$(mise config get --global "tools.${lang}" 2>/dev/null || true)"
+        if [[ -z "$requested" ]]; then
+            print_status "Installing ${lang} with mise..."
+            run mise use --global --yes --pin "${lang}@latest"
+        elif [[ "$requested" == "latest" ]]; then
+            installed="$(mise latest --installed "$lang" 2>/dev/null || true)"
+            if [[ -n "$installed" ]]; then
+                print_status "Pinning ${lang} to installed version ${installed}..."
+                run mise use --global --yes --pin "${lang}@${installed}"
+            else
+                print_status "Installing ${lang} with mise..."
+                run mise use --global --yes --pin "${lang}@latest"
+            fi
+        else
+            print_success "${lang} already configured globally (${requested})"
+            (cd "$HOME" && run mise install --yes "$lang")
+        fi
     done
 }
 
